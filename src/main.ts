@@ -35,7 +35,7 @@ function isCharacter(value: unknown): value is Character {
   return (
     typeof candidate.id === "number" &&
     typeof candidate.name === "string" &&
-    typeof isElement(candidate.element) &&
+    isElement(candidate.element) &&
     typeof candidate.level === "number" &&
     typeof candidate.active === "boolean"
   );
