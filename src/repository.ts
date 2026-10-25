@@ -35,6 +35,9 @@ export class CharacterRepository extends Repository<Character> {
     this.add(character);
     return character;
   }
+  findByElement(element: Character["element"]): Character[] {
+    return this.getAll().filter(character => character.element === element);
+  }
 }
 
 export class SpellRepository extends Repository<Spell> {}

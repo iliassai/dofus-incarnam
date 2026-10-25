@@ -54,8 +54,7 @@ class GameService {
 
   findByElement(element: DofusElement): CharacterSummary[] {
     return this.characters
-      .getAll()
-      .filter(character => character.element === element)
+      .findByElement(element)
       .map(({ id, name, element }) => ({ id, name, element }));
   }
 
@@ -157,6 +156,11 @@ const newcomer = characters.register({
 });
 console.log(newcomer);
 // characters.register({}); // compile error: name, element, level, active are required
+
+console.log("\n--- Ex 2: findByElement on the repository ---");
+console.log(characters.findByElement("Terre"));
+console.log(characters.findByElement("Feu"));
+// characters.findByElement("Cra"); // compile error: not a valid element
 
 // Compile-time demonstrations: these aliases are checked by TypeScript.
 type CastArguments = Parameters<GameService["castSpell"]>;
