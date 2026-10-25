@@ -2,6 +2,7 @@ import {
   type Character,
   type Spell,
   type GameEvent,
+  type SpellCastEvent,
   type DofusElement,
   type ElementMastery,
   type SpellCategory,
@@ -34,6 +35,10 @@ function isCharacter(value: unknown): value is Character {
   );
 }
 
+function handleSpellCast(event: SpellCastEvent): void {
+  console.log(`Character ${event.characterId} cast ${event.spellName}`);
+}
+
 class GameService {
   constructor(
     private readonly characters: CharacterRepository,
@@ -62,10 +67,9 @@ class GameService {
     return this.characters.update(id, changes);
   }
 
-  getSpellEvents(events: GameEvent[]): Extract<GameEvent, { type: "spell-cast" }>[] {
+  getSpellEvents(events: GameEvent[]): SpellCastEvent[] {
     return events.filter(
-      (event): event is Extract<GameEvent, { type: "spell-cast" }> =>
-        event.type === "spell-cast"
+      (event): event is SpellCastEvent => event.type === "spell-cast"
     );
   }
 }
@@ -161,6 +165,14 @@ console.log("\n--- Ex 2: findByElement on the repository ---");
 console.log(characters.findByElement("Terre"));
 console.log(characters.findByElement("Feu"));
 // characters.findByElement("Cra"); // compile error: not a valid element
+
+console.log("\n--- Ex 3: handleSpellCast only accepts spell-cast events ---");
+handleSpellCast({
+  type: "spell-cast",
+  characterId: 1,
+  spellName: "Colère de Iop"
+});
+// handleSpellCast({ type: "level-up", characterId: 2, newLevel: 181 }); // compile error
 
 // Compile-time demonstrations: these aliases are checked by TypeScript.
 type CastArguments = Parameters<GameService["castSpell"]>;

@@ -25,6 +25,8 @@ export type GameEvent =
 | { type: "level-up"; characterId: number; newLevel: number }
 | { type: "character-banned"; characterId: number };
 
+export type SpellCastEvent = Extract<GameEvent, { type: "spell-cast" }>;
+
 // Conditional type: choose an output type based on the spell category.
 export type SpellOutput<T extends SpellCategory> =
 T extends "attack" ? number :
