@@ -17,8 +17,14 @@ import {
 import { CharacterRepository, SpellRepository } from "./repository";
 import { Log, Cache } from "./decorators";
 
+const validElements: readonly DofusElement[] = ["Terre", "Feu", "Eau", "Air"];
+
+// "value is DofusElement" is a type predicate.
+function isElement(value: unknown): value is DofusElement {
+  return typeof value === "string" && validElements.some((element) => element === value);
+}
+
 // Type guard: safely narrow unknown data to a Character.
-// (Weak version: "element" is only checked to be a string. Fixed in exercise 6.)
 function isCharacter(value: unknown): value is Character {
   if (typeof value !== "object" || value === null) {
     return false;
@@ -29,7 +35,7 @@ function isCharacter(value: unknown): value is Character {
   return (
     typeof candidate.id === "number" &&
     typeof candidate.name === "string" &&
-    typeof candidate.element === "string" &&
+    typeof isElement(candidate.element) &&
     typeof candidate.level === "number" &&
     typeof candidate.active === "boolean"
   );
@@ -205,6 +211,26 @@ const calculator = new SpellCalculator();
 console.log(calculator.calculatePower(10, 3));
 console.log(calculator.calculatePower(10, 3));
 console.log(calculator.calculatePower(5, 2));
+
+console.log("\n--- Ex 6: stricter type guard ---");
+const validData: unknown = {
+  id: 1,
+  name: "Tristepin",
+  element: "Terre",
+  level: 150,
+  active: true,
+};
+
+const invalidData: unknown = {
+  id: 2,
+  name: "Ogrest",
+  element: "Ombre",
+  level: 200,
+  active: true,
+};
+
+console.log(isCharacter(validData)); // true
+console.log(isCharacter(invalidData)); // false
 
 // Compile-time demonstrations: these aliases are checked by TypeScript.
 type CastArguments = Parameters<GameService["castSpell"]>;
