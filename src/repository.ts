@@ -1,4 +1,4 @@
-import type { Character, Spell } from "./types";
+import type { Character, Spell, NewCharacter } from "./types";
 import { Log, MeasureTime } from "./decorators";
 
 export class Repository<T extends { id: number }> {
@@ -28,5 +28,13 @@ export class Repository<T extends { id: number }> {
   }
 }
 
-export class CharacterRepository extends Repository<Character> {}
+export class CharacterRepository extends Repository<Character> {
+  register(data: NewCharacter): Character {
+    const id = Math.max(0, ...this.getAll().map(c => c.id)) + 1;
+    const character: Character = { id, ...data };
+    this.add(character);
+    return character;
+  }
+}
+
 export class SpellRepository extends Repository<Spell> {}

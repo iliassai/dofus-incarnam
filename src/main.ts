@@ -148,6 +148,16 @@ const events: GameEvent[] = [
 ];
 console.log(game.getSpellEvents(events));
 
+console.log("\n--- Ex 1: register a new character (no id given) ---");
+const newcomer = characters.register({
+  name: "Yugo",
+  element: "Feu",
+  level: 1,
+  active: true
+});
+console.log(newcomer);
+// characters.register({}); // compile error: name, element, level, active are required
+
 // Compile-time demonstrations: these aliases are checked by TypeScript.
 type CastArguments = Parameters<GameService["castSpell"]>;
 type CastResult = ReturnType<GameService["castSpell"]>;

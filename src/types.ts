@@ -37,7 +37,11 @@ export type ArrayElement<T> =
 T extends (infer Item)[] ? Item : never;
 
 // Utility type examples.
-export type NewCharacter = Omit<Character, "id">;
+// Omit<Character, "id"> would drop the known keys because of the index signature,
+// so we remove "id" with a key-remapping mapped type instead.
+export type NewCharacter = {
+  [K in keyof Character as K extends "id" ? never : K]: Character[K];
+};
 export type CharacterSummary = Pick<Character, "id" | "name" | "element">;
 export type CharacterUpdate = Partial<Character>;
 
