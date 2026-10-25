@@ -15,7 +15,7 @@ import {
 } from "./types";
 
 import { CharacterRepository, SpellRepository } from "./repository";
-import { Log } from "./decorators";
+import { Log, Cache } from "./decorators";
 
 // Type guard: safely narrow unknown data to a Character.
 // (Weak version: "element" is only checked to be a string. Fixed in exercise 6.)
@@ -37,6 +37,14 @@ function isCharacter(value: unknown): value is Character {
 
 function handleSpellCast(event: SpellCastEvent): void {
   console.log(`Character ${event.characterId} cast ${event.spellName}`);
+}
+
+class SpellCalculator {
+  @Cache
+  calculatePower(basePower: number, multiplier: number): number {
+    console.log("Calculating...");
+    return basePower * multiplier;
+  }
 }
 
 class GameService {
@@ -191,6 +199,12 @@ try {
   console.log("Rejected:", error instanceof Error ? error.message : error);
 }
 console.log("Spells stored:", spells.getAll().length);
+
+console.log("\n--- Ex 5: Cache decorator ---");
+const calculator = new SpellCalculator();
+console.log(calculator.calculatePower(10, 3));
+console.log(calculator.calculatePower(10, 3));
+console.log(calculator.calculatePower(5, 2));
 
 // Compile-time demonstrations: these aliases are checked by TypeScript.
 type CastArguments = Parameters<GameService["castSpell"]>;
