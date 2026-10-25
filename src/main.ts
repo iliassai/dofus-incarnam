@@ -28,10 +28,10 @@ function isCharacter(value: unknown): value is Character {
 
   return (
     typeof candidate.id === "number" &&
-      typeof candidate.name === "string" &&
-      typeof candidate.element === "string" &&
-      typeof candidate.level === "number" &&
-      typeof candidate.active === "boolean"
+    typeof candidate.name === "string" &&
+    typeof candidate.element === "string" &&
+    typeof candidate.level === "number" &&
+    typeof candidate.active === "boolean"
   );
 }
 
@@ -42,7 +42,7 @@ function handleSpellCast(event: SpellCastEvent): void {
 class GameService {
   constructor(
     private readonly characters: CharacterRepository,
-    private readonly spells: SpellRepository
+    private readonly spells: SpellRepository,
   ) {}
 
   @Log
@@ -68,9 +68,7 @@ class GameService {
   }
 
   getSpellEvents(events: GameEvent[]): SpellCastEvent[] {
-    return events.filter(
-      (event): event is SpellCastEvent => event.type === "spell-cast"
-    );
+    return events.filter((event): event is SpellCastEvent => event.type === "spell-cast");
   }
 }
 
@@ -83,7 +81,7 @@ characters.add({
   element: "Terre",
   level: 150,
   active: true,
-  characterClass: "Iop"
+  characterClass: "Iop",
 });
 
 characters.add({
@@ -91,7 +89,7 @@ characters.add({
   name: "Evangelyne",
   element: "Air",
   level: 180,
-  active: true
+  active: true,
 });
 
 characters.add({
@@ -99,21 +97,21 @@ characters.add({
   name: "Amalia",
   element: "Eau",
   level: 120,
-  active: true
+  active: true,
 });
 
 spells.add({
   id: 101,
   name: "Colère de Iop",
   category: "attack",
-  power: 80
+  power: 80,
 });
 
 spells.add({
   id: 102,
   name: "Armure Terrestre",
   category: "defense",
-  power: 60
+  power: 60,
 });
 
 const game = new GameService(characters, spells);
@@ -139,7 +137,7 @@ const mastery: ElementMastery = {
   Terre: 100,
   Feu: 80,
   Eau: 90,
-  Air: 70
+  Air: 70,
 };
 console.log(mastery);
 
@@ -147,7 +145,7 @@ console.log("\n--- Extract spell-cast events ---");
 const events: GameEvent[] = [
   { type: "spell-cast", characterId: 1, spellName: "Bond" },
   { type: "level-up", characterId: 2, newLevel: 181 },
-  { type: "character-banned", characterId: 3 }
+  { type: "character-banned", characterId: 3 },
 ];
 console.log(game.getSpellEvents(events));
 
@@ -156,7 +154,7 @@ const newcomer = characters.register({
   name: "Yugo",
   element: "Feu",
   level: 1,
-  active: true
+  active: true,
 });
 console.log(newcomer);
 // characters.register({}); // compile error: name, element, level, active are required
@@ -170,9 +168,29 @@ console.log("\n--- Ex 3: handleSpellCast only accepts spell-cast events ---");
 handleSpellCast({
   type: "spell-cast",
   characterId: 1,
-  spellName: "Colère de Iop"
+  spellName: "Colère de Iop",
 });
 // handleSpellCast({ type: "level-up", characterId: 2, newLevel: 181 }); // compile error
+
+console.log("\n--- Ex 4: ValidateSpellPower ---");
+spells.add({
+  id: 103,
+  name: "Mot Soignant",
+  category: "healing",
+  power: 50,
+});
+
+try {
+  spells.add({
+    id: 104,
+    name: "Sort Invalide",
+    category: "attack",
+    power: -10,
+  });
+} catch (error: unknown) {
+  console.log("Rejected:", error instanceof Error ? error.message : error);
+}
+console.log("Spells stored:", spells.getAll().length);
 
 // Compile-time demonstrations: these aliases are checked by TypeScript.
 type CastArguments = Parameters<GameService["castSpell"]>;
@@ -184,15 +202,17 @@ type AttackSpellExample = AttackSpell;
 type RemainingCategories = NonHealingCategory;
 type CategoryExample = SpellCategory;
 
-const typeExamples: [
-  CastArguments,
-  CastResult,
-  AttackOutput,
-  HealingOutput,
-  SpellItem,
-  AttackSpellExample["category"],
-  RemainingCategories,
-  CategoryExample
-] | null = null;
+const typeExamples:
+  | [
+      CastArguments,
+      CastResult,
+      AttackOutput,
+      HealingOutput,
+      SpellItem,
+      AttackSpellExample["category"],
+      RemainingCategories,
+      CategoryExample,
+    ]
+  | null = null;
 
 void typeExamples;

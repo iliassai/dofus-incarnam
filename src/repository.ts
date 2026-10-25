@@ -1,5 +1,5 @@
 import type { Character, Spell, NewCharacter } from "./types";
-import { Log, MeasureTime } from "./decorators";
+import { Log, MeasureTime, ValidateSpellPower } from "./decorators";
 
 export class Repository<T extends { id: number }> {
   private items: T[] = [];
@@ -11,7 +11,7 @@ export class Repository<T extends { id: number }> {
 
   @MeasureTime
   findById(id: number): T | undefined {
-    return this.items.find(item => item.id === id);
+    return this.items.find((item) => item.id === id);
   }
 
   getAll(): T[] {
@@ -30,14 +30,19 @@ export class Repository<T extends { id: number }> {
 
 export class CharacterRepository extends Repository<Character> {
   register(data: NewCharacter): Character {
-    const id = Math.max(0, ...this.getAll().map(c => c.id)) + 1;
+    const id = Math.max(0, ...this.getAll().map((c) => c.id)) + 1;
     const character: Character = { id, ...data };
     this.add(character);
     return character;
   }
   findByElement(element: Character["element"]): Character[] {
-    return this.getAll().filter(character => character.element === element);
+    return this.getAll().filter((character) => character.element === element);
   }
 }
 
-export class SpellRepository extends Repository<Spell> {}
+export class SpellRepository extends Repository<Spell> {
+  @ValidateSpellPower
+  override add(spell: Spell): void {
+    super.add(spell);
+  }
+}
