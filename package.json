@@ -1,0 +1,14 @@
+{
+  "name": "dofus-incarnam",
+  "version": "1.0.0",
+  "private": true,
+  "description": "TypeScript mini-project (Dofus theme) covering generics, utility types, conditional types, index signatures, type guards, and legacy method decorators.",
+  "scripts": {
+    "start": "bun run src/main.ts",
+    "typecheck": "bun check"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^7"
+  }
+}
